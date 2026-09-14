@@ -3,34 +3,206 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QA Test Case Generator</title>
+
+    <title>QA Test Case Manager</title>
+
     <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
     <div class="container">
-      <h1>QA Test Case Generator</h1>
+      <!-- Header -->
+      <header class="header">
+        <div>
+          <h1>QA Test Case Manager</h1>
+          <p>Create, manage and organize test cases</p>
+        </div>
+      </header>
 
-      <div class="form-section">
-        <label for="title">Test Case Title</label>
-        <input type="text" id="title" placeholder="Enter test case title" />
+      <!-- Statistics -->
+      <section class="stats">
+        <div class="stat-card">
+          <span class="stat-label">Total</span>
+          <strong id="totalCount">0</strong>
+        </div>
 
-        <label for="steps">Test Steps</label>
-        <textarea id="steps" placeholder="Enter test steps"></textarea>
-        <label for="expectedResult">Expected Result</label>
-        <textarea
-          id="expectedResult"
-          placeholder="Enter expected result"
-        ></textarea>
-        <button id="addTestCase">Add Test Case</button>
-        <button id="cancelEdit" style="display: none">Cancel</button>
-      </div>
+        <div class="stat-card">
+          <span class="stat-label">Ready</span>
+          <strong id="readyCount">0</strong>
+        </div>
 
-      <div class="test-cases-section">
-        <h2>Test Cases</h2>
+        <div class="stat-card">
+          <span class="stat-label">Automated</span>
+          <strong id="automatedCount">0</strong>
+        </div>
 
+        <div class="stat-card">
+          <span class="stat-label">Critical</span>
+          <strong id="criticalCount">0</strong>
+        </div>
+      </section>
+
+      <!-- Test Case Form -->
+      <section class="form-section">
+        <div class="section-header">
+          <div>
+            <h2 id="formHeading">Create Test Case</h2>
+            <p>Add a new test case to your project.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <!-- Title -->
+          <div class="form-group full-width">
+            <label for="title">Test Case Title</label>
+
+            <input
+              type="text"
+              id="title"
+              placeholder="Example: Login with valid credentials"
+            />
+          </div>
+
+          <!-- Type -->
+          <div class="form-group">
+            <label for="type">Type</label>
+
+            <select id="type">
+              <option value="Functional">Functional</option>
+              <option value="UI">UI</option>
+              <option value="API">API</option>
+              <option value="Integration">Integration</option>
+              <option value="E2E">E2E</option>
+              <option value="Regression">Regression</option>
+            </select>
+          </div>
+
+          <!-- Priority -->
+          <div class="form-group">
+            <label for="priority">Priority</label>
+
+            <select id="priority">
+              <option value="Critical">Critical</option>
+              <option value="High">High</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+
+          <!-- Status -->
+          <div class="form-group">
+            <label for="status">Status</label>
+
+            <select id="status">
+              <option value="Draft">Draft</option>
+              <option value="Ready" selected>Ready</option>
+              <option value="Automated">Automated</option>
+              <option value="Deprecated">Deprecated</option>
+            </select>
+          </div>
+
+          <!-- Tags -->
+          <div class="form-group">
+            <label for="tags">Tags</label>
+
+            <input
+              type="text"
+              id="tags"
+              placeholder="login, smoke, authentication"
+            />
+
+            <small>Separate multiple tags with commas.</small>
+          </div>
+
+          <!-- Steps -->
+          <div class="form-group full-width">
+            <label for="steps">Test Steps</label>
+
+            <textarea
+              id="steps"
+              placeholder="1. Open the login page&#10;2. Enter valid username&#10;3. Enter valid password&#10;4. Click Login"
+            ></textarea>
+          </div>
+
+          <!-- Expected Result -->
+          <div class="form-group full-width">
+            <label for="expectedResult">Expected Result</label>
+
+            <textarea
+              id="expectedResult"
+              placeholder="User should be successfully logged in and redirected to the dashboard."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button id="addTestCase" class="primary-button">Add Test Case</button>
+
+          <button
+            id="cancelEdit"
+            class="secondary-button"
+            style="display: none"
+          >
+            Cancel
+          </button>
+        </div>
+      </section>
+
+      <!-- Test Cases -->
+      <section class="test-cases-section">
+        <div class="section-header">
+          <div>
+            <h2>Test Cases</h2>
+            <p>Search and manage your test cases.</p>
+          </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="filters">
+          <div class="search-box">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search by ID, title or tags..."
+            />
+          </div>
+
+          <select id="typeFilter">
+            <option value="All">All Types</option>
+            <option value="Functional">Functional</option>
+            <option value="UI">UI</option>
+            <option value="API">API</option>
+            <option value="Integration">Integration</option>
+            <option value="E2E">E2E</option>
+            <option value="Regression">Regression</option>
+          </select>
+
+          <select id="priorityFilter">
+            <option value="All">All Priorities</option>
+            <option value="Critical">Critical</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+
+          <select id="statusFilter">
+            <option value="All">All Statuses</option>
+            <option value="Draft">Draft</option>
+            <option value="Ready">Ready</option>
+            <option value="Automated">Automated</option>
+            <option value="Deprecated">Deprecated</option>
+          </select>
+
+          <button id="clearFilters" class="secondary-button">
+            Clear Filters
+          </button>
+        </div>
+
+        <div id="resultsInfo" class="results-info"></div>
+
+        <!-- Test Cases Container -->
         <div id="testCases"></div>
-      </div>
+      </section>
     </div>
 
     <script src="script.js"></script>
