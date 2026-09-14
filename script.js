@@ -1,10 +1,13 @@
 const addTestCaseButton = document.getElementById("addTestCase");
+const cancelEditButton = document.getElementById("cancelEdit");
 const testCasesContainer = document.getElementById("testCases");
 
 let testCases = JSON.parse(localStorage.getItem("testCases")) || [];
 
 let nextTestCaseNumber =
   Number(localStorage.getItem("nextTestCaseNumber")) || 1;
+
+let editingTestCaseId = null;
 
 // Make sure the counter is higher than any existing test case ID
 testCases.forEach((testCase) => {
@@ -52,6 +55,10 @@ function displayTestCases() {
             <strong>Expected Result:</strong>
             <p>${testCase.expectedResult || "Not provided"}</p>
 
+            <button onclick="editTestCase('${testCase.id}')">
+                Edit
+            </button>
+
             <button onclick="deleteTestCase('${testCase.id}')">
                 Delete
             </button>
@@ -61,7 +68,7 @@ function displayTestCases() {
   });
 }
 
-// Add a new test case
+// Add or update a test case
 addTestCaseButton.addEventListener("click", function () {
   const title = document.getElementById("title").value.trim();
   const steps = document.getElementById("steps").value.trim();
@@ -72,6 +79,27 @@ addTestCaseButton.addEventListener("click", function () {
     return;
   }
 
+  // Update existing test case
+  if (editingTestCaseId) {
+    const testCase = testCases.find(
+      (testCase) => testCase.id === editingTestCaseId,
+    );
+
+    if (testCase) {
+      testCase.title = title;
+      testCase.steps = steps;
+      testCase.expectedResult = expectedResult;
+    }
+
+    localStorage.setItem("testCases", JSON.stringify(testCases));
+
+    resetForm();
+    displayTestCases();
+
+    return;
+  }
+
+  // Create new test case
   const testCase = {
     id: generateTestCaseId(),
     title: title,
@@ -85,9 +113,31 @@ addTestCaseButton.addEventListener("click", function () {
 
   displayTestCases();
 
-  document.getElementById("title").value = "";
-  document.getElementById("steps").value = "";
-  document.getElementById("expectedResult").value = "";
+  resetForm();
+});
+
+// Edit a test case
+function editTestCase(id) {
+  const testCase = testCases.find((testCase) => testCase.id === id);
+
+  if (!testCase) {
+    return;
+  }
+
+  document.getElementById("title").value = testCase.title;
+  document.getElementById("steps").value = testCase.steps;
+  document.getElementById("expectedResult").value =
+    testCase.expectedResult || "";
+
+  editingTestCaseId = id;
+
+  addTestCaseButton.textContent = "Update Test Case";
+  cancelEditButton.style.display = "inline-block";
+}
+
+// Cancel editing
+cancelEditButton.addEventListener("click", function () {
+  resetForm();
 });
 
 // Delete a test case
@@ -97,6 +147,22 @@ function deleteTestCase(id) {
   localStorage.setItem("testCases", JSON.stringify(testCases));
 
   displayTestCases();
+
+  if (editingTestCaseId === id) {
+    resetForm();
+  }
+}
+
+// Reset the form
+function resetForm() {
+  document.getElementById("title").value = "";
+  document.getElementById("steps").value = "";
+  document.getElementById("expectedResult").value = "";
+
+  editingTestCaseId = null;
+
+  addTestCaseButton.textContent = "Add Test Case";
+  cancelEditButton.style.display = "none";
 }
 
 // Display existing test cases when page loads
