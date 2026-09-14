@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QA Test Case Generator</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>QA Test Case Generator</h1>
+
+      <div class="form-section">
+        <label for="title">Test Case Title</label>
+        <input type="text" id="title" placeholder="Enter test case title" />
+
+        <label for="steps">Test Steps</label>
+        <textarea id="steps" placeholder="Enter test steps"></textarea>
+
+        <button id="addTestCase">Add Test Case</button>
+      </div>
+
+      <div class="test-cases-section">
+        <h2>Test Cases</h2>
+
+        <div id="testCases"></div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
